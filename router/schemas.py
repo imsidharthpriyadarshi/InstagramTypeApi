@@ -9,59 +9,81 @@ class UserBase(BaseModel):
     username :str
     email :EmailStr
     password: str
-    profile_photo:Optional[str] = None
-    
+
+             
 class UserDisplay(BaseModel):
     username :str
     email : EmailStr
-    profile_photo:str
-    
+    profile_pic:str
+
     class Config():
         orm_mode= True
         
         
 class PostBase(BaseModel):
-    image_url:str
-    image_url_type:str
+    caption:str
+         
+class PostBaseOut(BaseModel):
     caption:str
     user_id:int
-         
+    class Config():
+        orm_mode= True
+           
+ #for post pic
+class PostId(BaseModel):
+    id:int 
     
- #post display
- 
+class PostWithPic(PostId):
+    image_url:str
+    class Config():
+        orm_mode= True
+                    
+class PostPicOut(PostId):
+    image_url:str
+    post_id:int
+    userposts:PostBaseOut
+    class Config():
+        orm_mode= True
+        
+        
+
+    
 class User(BaseModel):
+    id:int
     username: str
-    profile_photo:str
+    profile_pic:str
     class Config():
         orm_mode= True
         
 #for comment display  
 
 class Comment(BaseModel):
-    text:str
-    username:str  
-    created_at: datetime    
+    text:str  
+    user_comment:UserDisplay 
+    created_at: datetime  
     class Config():
         orm_mode= True
         
 class PostDisplay(BaseModel):
     id:int
-    image_url: str
-    image_url_type:str
     caption:str
     timestamp: datetime
     user :User
+    post_pics:List[PostWithPic]
     comments: List[Comment]
     class Config():
        orm_mode= True
        
        
+#current user schema       
 class LoginBase(BaseModel):
     id: int
     email: EmailStr
     username:str     
    
 class CommentBase(BaseModel):
-        username: str
         text: str
         post_id:int
+        
+
+        

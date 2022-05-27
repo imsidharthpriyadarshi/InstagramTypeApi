@@ -1,15 +1,15 @@
 from router.schemas import PostBase
 from sqlalchemy.orm.session import Session
 from db import models
+from router import schemas
 from fastapi import HTTPException,status,Response
 
-def create(db:Session, request: PostBase):
+def create(db:Session, request: PostBase,current_user: schemas.LoginBase):
     new_post = models.DbPost(
         
-    image_url = request.image_url,
-    image_url_type= request.image_url_type,
+    
     caption= request.caption,
-    user_id =request.user_id
+    user_id = current_user.id
         
     )
     db.add(new_post)

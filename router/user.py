@@ -17,23 +17,12 @@ router = APIRouter(
 )
 
 @router.post("",response_model=UserDisplay)
-def create_users(request: UserBase,db: Session = Depends(get_db)):
-    return create_user(request,db)
+def create_users(request: UserBase = Depends(),image:UploadFile= File(...),db: Session = Depends(get_db)):
+    return create_user(request= request,db=db,image= image)
     
 @router.get("/all",response_model=List[schemas.UserDisplay] )  
 def get_all_user(db: Session = Depends(get_db), current_user: schemas.LoginBase =Depends(Oauth2.get_current_user) ):
     users = db.query(models.DbUser).all()
     return users  
 
-@router.post("/image")
-def upload_image(image:UploadFile= File(...)):
-    letters=string.ascii_letters
-    rand_str = ''.join(random.choice(letters) for i in range(10))
-    new = f'_{rand_str}.'
-    filename = new.join(image.filename.rsplit('.',1))
-    path = f'images/user/{filename}'
-
-    with open(path, "w+b") as buffer:
-        shutil.copyfileobj(image.file,buffer)
-        
-    return {'filename': path}        
+       

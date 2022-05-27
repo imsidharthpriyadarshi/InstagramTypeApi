@@ -21,4 +21,4 @@ def commments(post_id:int, db: Session= Depends(get_db), current_user: schemas.L
 
 @router.post("")
 def create(request: schemas.CommentBase,db: Session= Depends(get_db), current_user: schemas.LoginBase =Depends(get_current_user)):
-    return db_comments.create_comments(db,request)
+    return db_comments.create_comments(db,request,current_user=current_user)

@@ -10,33 +10,46 @@ class DbUser(Base):
     id = Column(Integer, primary_key = True, index = True)
     username = Column(String,nullable= False,unique = True)
     email= Column(String, nullable = False,unique = True)
+    profile_pic= Column(String, nullable= False, server_default="images/user/default.jpg")
     password = Column(String, nullable = False)
     
-    profile_photo= Column(String, server_default= "images/user/default.jpg")
     
     items = relationship('DbPost', back_populates= 'user')
-    
+
+
     
     
 class DbPost(Base):
     __tablename__= 'posts'
     id  = Column(Integer, primary_key= True,index = True)
-    image_url = Column(String)
-    image_url_type= Column(String)
     caption= Column(String)
     timestamp = Column(TIMESTAMP(timezone=True),nullable= False, server_default=text('now()'))
     user_id = Column(Integer, ForeignKey('users.id',ondelete='CASCADE'),nullable= False)
     
     user = relationship('DbUser', back_populates= 'items')
     comments =relationship("DbComment", back_populates= 'post')
+    post_pics= relationship("DbPostPic",back_populates='userposts')
     
 class DbComment(Base):
     __tablename__ = 'comment'
     id = Column(Integer, primary_key= True, index= True)
     text = Column(String,nullable= False)
-    username = Column(String,nullable= False)
+    username = Column(String,ForeignKey('users.username',ondelete='CASCADE'),nullable= False)
     created_at = Column(TIMESTAMP(timezone=True),nullable= False,server_default=func.now())
     
     post_id = Column(Integer,ForeignKey('posts.id',ondelete='CASCADE'),nullable= False)
-    
+    user_comment= relationship('DbUser')
+
     post = relationship("DbPost", back_populates= 'comments')
+    
+    
+    
+    
+
+
+class DbPostPic(Base):
+    __tablename__ = 'post_pic'
+    id = Column(Integer, primary_key= True, index= True)
+    image_url = Column(String)
+    post_id= Column(Integer,ForeignKey('posts.id',ondelete='CASCADE'), nullable = False)
+    userposts= relationship("DbPost",back_populates='post_pics')
