@@ -1,5 +1,6 @@
+
 from db.database import Base
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, String,Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.expression import text
 from sqlalchemy.sql.sqltypes import TIMESTAMP
@@ -12,8 +13,7 @@ class DbUser(Base):
     email= Column(String, nullable = False,unique = True)
     profile_pic= Column(String, nullable= False, server_default="images/user/default.jpg")
     password = Column(String, nullable = False)
-    
-    
+    is_verified= Column(Boolean,nullable=False,default= False)
     items = relationship('DbPost', back_populates= 'user')
 
 
@@ -53,3 +53,10 @@ class DbPostPic(Base):
     image_url = Column(String)
     post_id= Column(Integer,ForeignKey('posts.id',ondelete='CASCADE'), nullable = False)
     userposts= relationship("DbPost",back_populates='post_pics')
+    
+    
+class DbOTP(Base):
+    __tablename__ = 'email_otp'
+    username= Column(String, ForeignKey('users.username',ondelete='CASCADE'),primary_key=True,nullable = False)
+    otp=    Column(Integer,nullable = False)
+    

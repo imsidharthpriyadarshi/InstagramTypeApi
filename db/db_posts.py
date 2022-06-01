@@ -9,7 +9,7 @@ def create(db:Session, request: PostBase,current_user: schemas.LoginBase):
         
     
     caption= request.caption,
-    user_id = current_user.id
+    user_id =  current_user.id
         
     )
     db.add(new_post)
@@ -19,7 +19,7 @@ def create(db:Session, request: PostBase,current_user: schemas.LoginBase):
 
 
 
-def get_posts(db:Session):
+async def get_posts(db:Session):
     return db.query(models.DbPost).all()
 
 

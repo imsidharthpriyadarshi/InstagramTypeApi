@@ -1,5 +1,6 @@
 from datetime import datetime
-from typing import List, Optional
+from typing import Dict, List, Optional,Any
+
 from pydantic import BaseModel, EmailStr
 
 
@@ -86,4 +87,7 @@ class CommentBase(BaseModel):
         post_id:int
         
 
+class EmailSchema(BaseModel):
+   email: EmailStr
+ 
         

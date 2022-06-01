@@ -1,8 +1,9 @@
+import asyncio
 from typing import List
 from fastapi import APIRouter, Depends,HTTPException,status,UploadFile,File,Form
 from auth.Oauth2 import get_current_user
 from db.database import get_db
-from db import models
+from db import models,db_email
 from sqlalchemy.orm.session import Session
 
 
@@ -20,12 +21,16 @@ router = APIRouter(
 
 @router.post("",response_model=schemas.PostDisplay)
 def create_post(request: schemas.PostBase,db: Session= Depends(get_db),current_user: schemas.LoginBase =Depends(get_current_user)):
-          return create(request=request, db= db,current_user=current_user)
+    response = create(request=request, db= db,current_user=current_user)
  
+    return response
+      
  
 @router.get("/all",response_model=List[schemas.PostDisplay])
-def posts(db: Session= Depends(get_db)):
-    return get_posts(db=db)
+async def posts(db: Session= Depends(get_db)):
+    
+    posts= await get_posts(db=db)
+    return posts
 
 
 
@@ -53,6 +58,10 @@ def upload_image(db: Session= Depends(get_db),img_post: schemas.PostId = Depends
     db.add(post_photo)
     db.commit()
     db.refresh(post_photo)
+    
+  
+    
+    
         
     return post_photo    
 

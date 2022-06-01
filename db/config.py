@@ -10,6 +10,13 @@ class Settings(BaseSettings):
     secret_key: str
     algorithm: str
     token_exp_time:int
+    mail_username:str
+    mail_password:str
+    mail_port:int
+    mail_from:str
+    mail_server:str
+    mail_from_name:str
+    template_folder: str
     
     class Config:
         env_file= '.env'
