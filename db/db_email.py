@@ -28,7 +28,7 @@ conf = ConnectionConfig(
 
 
 
-def send_email_background(background_tasks: BackgroundTasks, body:dict,subject: str,email:str):
+def send_email_background(background_tasks: BackgroundTasks, body:dict,subject: str,email:str,template:str):
     
     
     message = MessageSchema(
@@ -39,5 +39,5 @@ def send_email_background(background_tasks: BackgroundTasks, body:dict,subject: 
     )
     fm = FastMail(conf)
     background_tasks.add_task(
-       fm.send_message, message, template_name="email.html")
+       fm.send_message, message, template_name=template)
 

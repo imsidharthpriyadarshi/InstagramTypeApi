@@ -58,5 +58,5 @@ class DbPostPic(Base):
 class DbOTP(Base):
     __tablename__ = 'email_otp'
     username= Column(String, ForeignKey('users.username',ondelete='CASCADE'),primary_key=True,nullable = False)
-    otp=    Column(Integer,nullable = False)
+    otp=    Column(String,nullable = False)
     
