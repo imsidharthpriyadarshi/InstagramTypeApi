@@ -64,40 +64,50 @@ def email_verification(username: str,otp:int,db:Session= Depends(get_db)):
 
 
 
-
 #Resend otp for email verification
 @router.post("/resend_otp")
 async def resend(background_task:BackgroundTasks,username:str,email:EmailStr,db: Session = Depends(get_db)):
     otp = random.randrange(100000,999999)
-    is_present =  db.query(models.DbOTP).filter(models.DbOTP.username==username).first()
-    if is_present:
-        db.delete(is_present)
-        db.commit()
+    is_user_register=  db.query(models.DbUser).filter(models.DbUser.username==username).first()  
+    if not  is_user_register:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="You have to signup") 
+    
+    if is_user_register and is_user_register.is_verified ==True:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="You do not need to send otp, go and just sign in") 
+    if is_user_register and is_user_register.is_verified == False:
+
+        is_present =  db.query(models.DbOTP).filter(models.DbOTP.username==username).first()
+        if is_present:
+            db.delete(is_present)
+            db.commit()
+            email_verification=models.DbOTP(
+            
+            username= username,
+            otp = Hash.bcrypt(str(otp))
+            
+            
+            )
+            db.add(email_verification)
+            db.commit()
+            db_email.send_email_background(background_task,{'title': " Your one time Password(OTP) is:  ", 'otp':otp}, "Email Verification",   
+            email,"email.html") 
+            return True
+        
+        
+        
+            
         email_verification=models.DbOTP(
-        
-        username= username,
-        otp = Hash.bcrypt(str(otp))
-        
-        
-        )
+                
+            username= username,
+            otp = Hash.bcrypt(str(otp))
+                
+                
+            )
         db.add(email_verification)
         db.commit()
         db_email.send_email_background(background_task,{'title': " Your one time Password(OTP) is:  ", 'otp':otp}, "Email Verification",   
-        email,"email.html") 
-        return True
-        
-    email_verification=models.DbOTP(
-        
-        username= username,
-        otp = Hash.bcrypt(str(otp))
-        
-        
-        )
-    db.add(email_verification)
-    db.commit()
-    db_email.send_email_background(background_task,{'title': " Your one time Password(OTP) is:  ", 'otp':otp}, "Email Verification",   
-        email,"email.html") 
-    return True   
+            email,"email.html") 
+        return True   
         
     
 
