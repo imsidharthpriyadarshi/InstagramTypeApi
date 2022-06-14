@@ -57,7 +57,7 @@ def email_verification(username: str,otp:int,db:Session= Depends(get_db)):
         db.commit()
         db.delete(is_present)
         db.commit()
-        return True
+        return {"is_verified":True}
     
 
 
@@ -73,7 +73,7 @@ async def resend(background_task:BackgroundTasks,username:str,email:EmailStr,db:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="You have to signup") 
     
     if is_user_register and is_user_register.is_verified ==True:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="You do not need to send otp, go and just sign in") 
+        raise HTTPException(status_code=status.HTTP_410_GONE, detail="You do not need to send otp, go and just sign in") 
     if is_user_register and is_user_register.is_verified == False:
 
         is_present =  db.query(models.DbOTP).filter(models.DbOTP.username==username).first()
@@ -91,7 +91,7 @@ async def resend(background_task:BackgroundTasks,username:str,email:EmailStr,db:
             db.commit()
             db_email.send_email_background(background_task,{'title': " Your one time Password(OTP) is:  ", 'otp':otp}, "Email Verification",   
             email,"email.html") 
-            return True
+            return {"is_sent":True}
         
         
         
@@ -107,7 +107,7 @@ async def resend(background_task:BackgroundTasks,username:str,email:EmailStr,db:
         db.commit()
         db_email.send_email_background(background_task,{'title': " Your one time Password(OTP) is:  ", 'otp':otp}, "Email Verification",   
             email,"email.html") 
-        return True   
+        return {"is_sent":True}   
         
     
 
