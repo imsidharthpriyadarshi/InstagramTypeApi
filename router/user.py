@@ -124,6 +124,6 @@ async def username_check(username:str,db:Session= Depends(get_db)):
     query = db.query(models.DbUser).filter(models.DbUser.username==username).first()
     if query:
         return False
-    return True
+    return {"isValid": True}
     
            
