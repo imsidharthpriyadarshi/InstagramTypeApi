@@ -123,7 +123,7 @@ def get_all_user(db: Session = Depends(get_db), current_user: schemas.LoginBase 
 async def username_check(username:str,db:Session= Depends(get_db)):
     query = db.query(models.DbUser).filter(models.DbUser.username==username).first()
     if query:
-        return False
+        return {"isValid": False}
     return {"isValid": True}
     
            
