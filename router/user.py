@@ -57,7 +57,7 @@ def email_verification(username: str,otp:int,db:Session= Depends(get_db)):
         db.commit()
         db.delete(is_present)
         db.commit()
-        return {"is_verified":True}
+        return {"detail":True}
     
 
 
@@ -91,7 +91,7 @@ async def resend(background_task:BackgroundTasks,username:str,email:EmailStr,db:
             db.commit()
             db_email.send_email_background(background_task,{'title': " Your one time Password(OTP) is:  ", 'otp':otp}, "Email Verification",   
             email,"email.html") 
-            return {"is_sent":True}
+            return {"detail":True}
         
         
         
@@ -107,7 +107,7 @@ async def resend(background_task:BackgroundTasks,username:str,email:EmailStr,db:
         db.commit()
         db_email.send_email_background(background_task,{'title': " Your one time Password(OTP) is:  ", 'otp':otp}, "Email Verification",   
             email,"email.html") 
-        return {"is_sent":True}   
+        return {"detail":True}   
         
     
 
@@ -122,7 +122,7 @@ def get_all_user(db: Session = Depends(get_db), current_user: schemas.LoginBase 
 @router.get("/username_check")
 async def username_check(username:str,db:Session= Depends(get_db)):
     query = db.query(models.DbUser).filter(models.DbUser.username==username).first()
-    if query:
+    if query and query.is_verified==True:
         return {"isValid": False}
     return {"isValid": True}
     
