@@ -109,7 +109,7 @@ async def resend(background_task:BackgroundTasks,username:str,email:EmailStr,db:
         db.commit()
         db_email.send_email_background(background_task,{'title': " Your one time Password(OTP) is:  ", 'otp':otp}, "Email Verification",   
             email,"email.html") 
-        return {"detail":True}   
+        return {"detail":"true"}   
         
     
 
