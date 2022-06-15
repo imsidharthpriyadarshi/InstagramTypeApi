@@ -49,7 +49,7 @@ def email_verification(username: str,otp:int,db:Session= Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Plz click on resend otp")
     
     if not Hash.verify(str(otp),is_present.otp):
-        raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE, detail="Wrong Otp")
+        raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE, detail={"detail":"Wrong Otp"})
     if Hash.verify(str(otp),is_present.otp):
         is_user_present= db.query(models.DbUser).filter(models.DbUser.username==username)
         if not is_user_present.first():
