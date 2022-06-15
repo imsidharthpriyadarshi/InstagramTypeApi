@@ -5,7 +5,7 @@ from sqlalchemy.orm.session import Session
 from db.database import get_db
 from db.db_users import create_user
 from router import schemas
-from typing import List
+from typing import List, Optional
 from db import models,db_email
 from db.hashing import Hash
 from auth import Oauth2
@@ -19,8 +19,10 @@ router = APIRouter(
 )
 
 @router.post("",response_model=UserDisplay)
-def create_users(background_tasks:BackgroundTasks,request: UserBase = Depends(),image:UploadFile= File(...),db: Session = Depends(get_db)):
-    response = create_user(request= request,db=db,image= image)
+async def create_users(background_tasks:BackgroundTasks,request: UserBase = Depends(),image:Optional[UploadFile]= File(None),db: Session = Depends(get_db)):
+   
+    response =  create_user(request= request,db=db,image= image)
+
     otp = random.randrange(100000,999999)
     
     email_verification=models.DbOTP(
