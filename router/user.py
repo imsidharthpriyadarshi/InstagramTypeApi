@@ -49,7 +49,10 @@ def email_verification(username: str,otp:int,db:Session= Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Plz click on resend otp")
     
     if not Hash.verify(str(otp),is_present.otp):
+        
         raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE, detail={"detail":"Wrong Otp"})
+        
+    
     if Hash.verify(str(otp),is_present.otp):
         is_user_present= db.query(models.DbUser).filter(models.DbUser.username==username)
         if not is_user_present.first():
@@ -124,7 +127,7 @@ def get_all_user(db: Session = Depends(get_db), current_user: schemas.LoginBase 
 @router.get("/username_check")
 async def username_check(username:str,db:Session= Depends(get_db)):
     query = db.query(models.DbUser).filter(models.DbUser.username==username).first()
-    if query and query.is_verified==True:
+    if query :
         return {"isValid": False}
     return {"isValid": True}
     

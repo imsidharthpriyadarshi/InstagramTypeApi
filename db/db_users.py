@@ -94,6 +94,42 @@ def create_user(request : UserBase,db: Session,image:UploadFile= File(...)):
         db.refresh(new_user)
         return new_user
     
+    
+    if (existing_user and existing_user.is_verified==False ) :
+            db.delete(existing_user)
+            db.commit()
+            
+            new_user = DbUser(
+                profile_pic = "images/user/default.jpg",
+                username= request.username,
+                email = request.email,
+                password= Hash.bcrypt(request.password)
+            
+                )
+            db.add(new_user)
+            db.commit()
+            db.refresh(new_user)
+            return new_user
+            
+        
+    if (existing_username and existing_username.is_verified==False ):
+            db.delete(existing_username)
+            db.commit()
+            
+            
+            new_user = DbUser(
+                profile_pic = "images/user/default.jpg",
+                username= request.username,
+                email = request.email,
+                password= Hash.bcrypt(request.password)
+            
+                )
+            db.add(new_user)
+            db.commit()
+            db.refresh(new_user)
+            return new_user
+    
+    
     new_user = DbUser(
             profile_pic = "images/user/default.jpg",
             username= request.username,
