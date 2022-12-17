@@ -8,7 +8,7 @@ from auth import auth
 app = FastAPI()
 
 
-#models.Base.metadata.create_all(engine)
+models.Base.metadata.create_all(engine)
 
 app.include_router(auth.router)
 app.include_router(user.router)
